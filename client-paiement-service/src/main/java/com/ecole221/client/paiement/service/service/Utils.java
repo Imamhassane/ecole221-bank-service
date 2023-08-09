@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 @Service
 @RequiredArgsConstructor
 public class Utils {
-    private static final BigDecimal MAX_VALUE = BigDecimal.valueOf(5000);
 
     public boolean checkTelSyntaxe(String tel) {
         String regex = "^\\+2217[05678]\\d{7}$";

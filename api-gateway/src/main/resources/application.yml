@@ -1,10 +1,39 @@
 server:
   port: 8765
-
 spring:
   application:
     name: api-gateway
-
   main:
     web-application-type: reactive
     allow-bean-definition-overriding: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/micro-service-realm
+          jwk-set-uri: http://localhost:8080/realms/micro-service-realm/protocol/openid-connect/certs
+
+
+app:
+  keycloak:
+    admin:
+      username: admin
+      password: admin
+    issuerUri: http://localhost:8080/realms/micro-service-realm
+    login:
+      url: http://localhost:8080/realms/micro-service-realm/protocol/openid-connect/token
+    server:
+      url: http://localhost:8080
+    client-secret: 6wpej5gROKnxGMP0hnpE14vi3OSR6Kbe
+    realm:
+      name: micro-service-realm
+    client-id: micro-app
+    grant-type: password
+keycloak:
+  use-resource-role-mappings: 'true'
+  ssl-required: external
+
+
+springdoc:
+  api-docs:
+    path: "/api-docs"

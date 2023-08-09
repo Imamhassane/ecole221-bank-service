@@ -15,6 +15,12 @@ public class CompteTransactionMapper {
                 .solde(compte.getSolde())
                 .build();
     }
+    public Compte compteDTOToCompte(CompteDTO compte){
+        return Compte.builder()
+                .client_id(compte.getClientId())
+                .solde(compte.getSolde())
+                .build();
+    }
     public TransactionDTO transactionToTransactionDTO(Transaction transaction){
         return TransactionDTO.builder()
                 .id(transaction.getId())

@@ -55,17 +55,17 @@
 			</dependency>
 			<dependency>
 				<groupId>com.ecole221</groupId>
-				<artifactId>client-paiement-serviceModel</artifactId>
+				<artifactId>client-paiement-service</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.ecole221</groupId>
-				<artifactId>compte-transaction-serviceModel</artifactId>
+				<artifactId>compte-transaction-service</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.ecole221</groupId>
-				<artifactId>common-serviceModel</artifactId>
+				<artifactId>common-service</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>

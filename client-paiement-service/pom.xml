@@ -7,7 +7,7 @@
         <groupId>com.ecole221</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>client-paiement-serviceModel</artifactId>
+    <artifactId>client-paiement-service</artifactId>
 
     <dependencies>
         <dependency>
@@ -33,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>com.ecole221</groupId>
-            <artifactId>common-serviceModel</artifactId>
+            <artifactId>common-service</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.kafka</groupId>

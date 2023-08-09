@@ -25,6 +25,11 @@ public class ClientController {
         return new ResponseEntity(clientService.saveClient(clientDTO), HttpStatus.CREATED);
     }
 
+    @PostMapping("/depot")
+    public ResponseEntity depot(@RequestBody ClientDTO clientDTO) {
+        return new ResponseEntity(clientService.depotInCompte(clientDTO), HttpStatus.OK);
+    }
+
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeAllClients() {

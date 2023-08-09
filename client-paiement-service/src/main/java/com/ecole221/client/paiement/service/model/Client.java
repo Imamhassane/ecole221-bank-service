@@ -21,7 +21,6 @@ import java.util.UUID;
 @Builder
 @Entity
 public class Client {
-
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private UUID id;
@@ -29,7 +28,4 @@ public class Client {
     private String tel;
     private ClientStatus clientStatus;
     private CompteStatus compteStatus;
-    /*@OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
-    private List<Paiement> paiements ;*/
-
 }

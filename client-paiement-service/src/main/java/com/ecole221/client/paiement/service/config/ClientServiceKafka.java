@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class ClientServiceKafka {
     private final ClientService clientService;
 
-    @KafkaListener(topics = "client-compte-event-topic", groupId = "default", containerFactory = "EventListner")
+    @KafkaListener(topics = "compte-client-event-topic", groupId = "default", containerFactory = "EventListner")
     public void getResponse(CompteEvent compteEvent) {
         clientService.updateClient(compteEvent);
     }

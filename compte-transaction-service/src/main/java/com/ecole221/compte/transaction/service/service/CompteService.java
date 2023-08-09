@@ -38,11 +38,17 @@ public class CompteService {
     @Transactional
     public CompteEvent saveCompte(ClientEvent clientEvent){
         ClientDTO clientDTO = clientEvent.getClientDTO();
+        CompteDTO compteDTO = this.findByClient(clientDTO.getId());
         CompteEvent compteEvent = null;
-        CompteDTO compteDTO = new CompteDTO(clientDTO.getId(), clientDTO.getSolde());
         try{
-            utils.checkSoldeIsValid(clientDTO.getSolde());
-            compteRepository.save(new Compte(clientDTO.getId(), clientDTO.getSolde()));
+            if (compteDTO!=null){
+                BigDecimal newSolde = compteDTO.getSolde().add(clientDTO.getSolde());
+                compteDTO.setSolde(newSolde);
+            }else{
+                utils.checkSoldeIsValid(clientDTO.getSolde());
+                compteDTO = new CompteDTO(clientDTO.getId(), clientDTO.getSolde());
+            }
+            compteRepository.save(mapper.compteDTOToCompte(compteDTO));
             compteEvent = new CompteEvent(CompteStatus.UPDATED , compteDTO);
         }catch(Exception ex){
             compteEvent = new CompteEvent(CompteStatus.ERREUR_SOLDE , compteDTO);
@@ -64,12 +70,8 @@ public class CompteService {
         CompteDTO compteDTO = findByClient(paiementEvent.getClientDTO().getId());
         //get paiement
         PaiementDTO paiementDTO = paiementEvent.getPaiementDTO();
-        log.info(compteDTO.toString());
-        log.info(serviceEvent.getServiceDTO().toString());
-
         //get solde du compte
         BigDecimal solde = compteDTO.getSolde();
-
         //get service
         ServiceDTO serviceDTO = serviceEvent.getServiceDTO();
         //get prix du service

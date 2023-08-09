@@ -16,6 +16,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -62,6 +63,7 @@ public class ClientService {
         clientRepository.findById(event.getCompteDTO().getClientId()).ifPresent(client -> {
             boolean isSaved = CompteStatus.UPDATED.equals(event.getCompteStatus());
             ClientStatus clientStatus = isSaved ? ClientStatus.COMPLETE: ClientStatus.ERREUR_CREATION;
+            log.info(event.getCompteStatus().toString());
             client.setClientStatus(clientStatus);
             client.setCompteStatus(CompteStatus.UPDATED);
         });
@@ -77,4 +79,14 @@ public class ClientService {
         if (!isExist) throw new ClientException("Ce numéro existe!");
     }
 
+    @Transactional
+    public Client depotInCompte(ClientDTO clientDTO){
+        utils.checkData(clientDTO.getTel());
+        if (clientDTO.getSolde().compareTo(BigDecimal.ZERO) < 0) throw new ClientException("Solde invalide!");
+        Client client = findClientByTel(clientDTO.getTel());
+        clientDTO.setId(client.getId());
+        ClientEvent clientEvent = new ClientEvent(clientDTO, ClientStatus.CREATED);
+        kafkaTemplate.send(CLIENT_TOPIC, clientEvent);
+        return client;
+    }
 }
