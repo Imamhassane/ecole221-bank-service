@@ -2,6 +2,7 @@ package com.ecole221.api.gateway.service;
 
 
 import com.ecole221.api.gateway.model.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -14,6 +15,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@RequiredArgsConstructor
 public class LoginService {
 
     @Value("${app.keycloak.login.url}")
@@ -25,8 +27,7 @@ public class LoginService {
     @Value("${app.keycloak.client-id}")
     private String clientId;
 
-    @Autowired
-    RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     public ResponseEntity<LoginResponse> login (LoginRequest request)  {
 

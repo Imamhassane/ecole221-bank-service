@@ -36,7 +36,8 @@ public class TransactionService {
             transaction.setDate(new Date());
             transaction.setClient_nom(paiementEvent.getClientDTO().getNomComplet());
             transaction.setTel(paiementEvent.getClientDTO().getTel());
-
+            transaction.setFrais(paiementEvent.getFraisDTO().getFraisPaiement());
+            transaction.setPourcentage(paiementEvent.getFraisDTO().getPourcentage());
             repository.save(transaction);
         }
     }
@@ -46,8 +47,8 @@ public class TransactionService {
                 .toList();
     }
 
-    public List<TransactionDTO> getTransactionByClient(String tel){
-        return repository.findAllByTel(tel).stream()
+    public List<TransactionDTO> getTransactionByClient(ClientDTO clientDTO){
+        return repository.findAllByTel(clientDTO.getTel()).stream()
                 .map(mapper::transactionToTransactionDTO)
                 .toList();
     }

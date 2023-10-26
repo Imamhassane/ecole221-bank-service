@@ -28,4 +28,6 @@ public class Transaction {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
     private BigDecimal montant;
+    private BigDecimal frais;
+    private double pourcentage;
 }

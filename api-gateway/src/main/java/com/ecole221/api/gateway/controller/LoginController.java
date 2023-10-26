@@ -18,7 +18,7 @@ public class LoginController {
     LoginService loginService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) throws Exception {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         log.info("Executing login");
 
         ResponseEntity<LoginResponse> response = null;

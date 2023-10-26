@@ -1,5 +1,6 @@
 package com.ecole221.service.service.service;
 
+import com.ecole221.service.service.exceptions.ServiceException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -11,6 +12,7 @@ public class Utils {
 
     public static void prixIsValid(BigDecimal prix) {
 
-       // if (!matcher.matches()) throw new ClientException("Numéro invalide!");
+        if (prix.compareTo(BigDecimal.ZERO) <= 0)
+            throw new ServiceException("Prix invalide!");
     }
 }

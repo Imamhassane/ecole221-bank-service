@@ -3,6 +3,8 @@ package com.ecole221.service.service.service;
 import com.ecole221.common.service.dto.ClientDTO;
 import com.ecole221.common.service.dto.ServiceDTO;
 import com.ecole221.common.service.event.*;
+import com.ecole221.service.service.exceptions.ServiceException;
+import com.ecole221.service.service.exceptions.ServiceNotFoundException;
 import com.ecole221.service.service.mapper.ServiceMapper;
 import com.ecole221.service.service.model.ServiceModel;
 import com.ecole221.service.service.repository.ServiceRepository;
@@ -35,8 +37,13 @@ public class ServiceService {
                 .map(mapper::serviceToServiceDTO)
                 .collect(Collectors.toList());
     }
-
+    public void serviceExist(String lib){
+        boolean isExist = getAllServices().stream()
+                .noneMatch(service -> Objects.equals(service.getLibelle(), lib));
+        if (!isExist) throw new ServiceException("Ce service existe!");
+    }
     public ServiceModel saveService(ServiceDTO serviceDTO) {
+        serviceExist(serviceDTO.getLibelle());
         Utils.prixIsValid(serviceDTO.getPrix());
         serviceDTO.setServiceStatus("ACTIF");
         return serviceRepository.save(mapper.serviceDTOToService(serviceDTO));
@@ -53,8 +60,9 @@ public class ServiceService {
         return serviceEvent;
     }
     
-    public ServiceDTO changeStatus(UUID id){
-        ServiceModel serviceModel = serviceRepository.findById(id).orElse(null);
+    public ServiceDTO changeStatus(ServiceDTO serviceDTO){
+        ServiceModel serviceModel = serviceRepository.findServiceByLibelle(serviceDTO.getLibelle())
+                .orElseThrow(()-> new ServiceNotFoundException("Service not found!"));
         Objects.requireNonNull(serviceModel).
                 setServiceStatus(serviceModel.getServiceStatus().equals(ServiceStatus.ACTIF)
                 ? ServiceStatus.INACTIF : ServiceStatus.ACTIF);

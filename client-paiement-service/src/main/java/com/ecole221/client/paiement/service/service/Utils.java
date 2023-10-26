@@ -1,6 +1,7 @@
 package com.ecole221.client.paiement.service.service;
 
 import com.ecole221.client.paiement.service.exception.client.ClientException;
+import com.ecole221.common.service.dto.ClientDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +22,10 @@ public class Utils {
         return  !matcher.matches();
     }
 
-    public void checkData(String tel){
-        if (checkTelSyntaxe(tel))throw new ClientException("Numéro invalide!");
+    public void checkData(ClientDTO clientDTO){
+        if (checkTelSyntaxe(clientDTO.getTel()))throw new ClientException("Numéro invalide!");
+        if (clientDTO.getSolde().compareTo(BigDecimal.ZERO) <= 0)
+            throw new ClientException("Solde invalide!");
     }
 
 }

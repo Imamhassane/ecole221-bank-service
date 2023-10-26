@@ -1,13 +1,14 @@
 package com.ecole221.compte.transaction.service.service;
 
-import com.ecole221.common.service.dto.ClientDTO;
-import com.ecole221.common.service.dto.CompteDTO;
-import com.ecole221.common.service.dto.PaiementDTO;
-import com.ecole221.common.service.dto.ServiceDTO;
+import com.ecole221.common.service.dto.*;
 import com.ecole221.common.service.event.*;
 import com.ecole221.compte.transaction.service.mapper.CompteTransactionMapper;
 import com.ecole221.compte.transaction.service.model.Compte;
+import com.ecole221.compte.transaction.service.model.Frais;
+import com.ecole221.compte.transaction.service.model.Pourcentage;
 import com.ecole221.compte.transaction.service.repository.CompteRepository;
+import com.ecole221.compte.transaction.service.repository.FraisRepository;
+import com.ecole221.compte.transaction.service.repository.PourcentageRepository;
 import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,8 +27,7 @@ import java.util.UUID;
 public class CompteService {
     private final CompteRepository compteRepository;
     private final CompteTransactionMapper mapper;
-    private final Utils utils;
-
+    private final ParametrageService parametrageService;
 
     public List<CompteDTO> getAllComptes() {
         return compteRepository.findAll()
@@ -45,7 +46,6 @@ public class CompteService {
                 BigDecimal newSolde = compteDTO.getSolde().add(clientDTO.getSolde());
                 compteDTO.setSolde(newSolde);
             }else{
-                utils.checkSoldeIsValid(clientDTO.getSolde());
                 compteDTO = new CompteDTO(clientDTO.getId(), clientDTO.getSolde());
             }
             compteRepository.save(mapper.compteDTOToCompte(compteDTO));
@@ -64,6 +64,8 @@ public class CompteService {
 
     @Transactional
     public CompteEvent checkSolde(ServiceEvent serviceEvent){
+        //get purcentage
+        Pourcentage pourcentage = parametrageService.getPourcentage();
         //get l'événement du paiement
         PaiementEvent paiementEvent = serviceEvent.getPaiementEvent();
         //get compte du client
@@ -88,9 +90,19 @@ public class CompteService {
             compteEvent = new CompteEvent(CompteStatus.ERREUR_SERVICE ,compteDTO,paiementDTO);
 
         } else {
-            BigDecimal newSolde = solde.subtract(prixService);
+            //frais paiement
+                BigDecimal fraisPaiement = prixService.multiply(BigDecimal.valueOf(pourcentage.getPourcentage()))
+                        .divide(BigDecimal.valueOf(100),2 , RoundingMode.HALF_UP);
+                //set new value of frais total
+                Frais frais = parametrageService.getFraisTotal();
+                frais.setTotal(frais.getTotal().add(fraisPaiement));
+                parametrageService.saveFrais(frais);
+            //fraisdto
+            FraisDTO fraisDTO = new FraisDTO(fraisPaiement , pourcentage.getPourcentage());
+            //
+            BigDecimal newSolde = solde.subtract(prixService).subtract(fraisPaiement);
             compteRepository.save(new Compte(compteDTO.getClientId(), newSolde));
-            compteEvent = new CompteEvent(CompteStatus.SOLDE_OK ,compteDTO,paiementDTO);
+            compteEvent = new CompteEvent(CompteStatus.SOLDE_OK ,compteDTO,paiementDTO,fraisDTO);
         }
         return compteEvent;
     }

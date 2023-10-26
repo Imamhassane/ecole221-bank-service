@@ -1,5 +1,6 @@
 package com.ecole221.compte.transaction.service.controller;
 
+import com.ecole221.common.service.dto.ClientDTO;
 import com.ecole221.compte.transaction.service.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,10 @@ public class TransactionController {
         return new ResponseEntity(service.getAllTransactions(), HttpStatus.OK);
     }
 
-    @GetMapping("/{tel}")
+    @PostMapping
     @ResponseBody
-    public ResponseEntity find(@PathVariable String tel){
-        return new ResponseEntity(service.getTransactionByClient(tel), HttpStatus.OK);
+    public ResponseEntity find(@RequestBody ClientDTO clientDTO){
+        return new ResponseEntity(service.getTransactionByClient(clientDTO), HttpStatus.OK);
     }
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)

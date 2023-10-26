@@ -1,18 +1,21 @@
 package com.ecole221.common.service.event;
 
 import com.ecole221.common.service.dto.ClientDTO;
+import com.ecole221.common.service.dto.FraisDTO;
 import com.ecole221.common.service.dto.PaiementDTO;
+import lombok.Data;
 
 import java.util.Date;
 import java.util.UUID;
 
+@Data
 public class PaiementEvent implements  Event {
     private PaiementDTO paiementDTO;
     private PaiementStatus paiementStatus;
     private ClientDTO clientDTO;
     private UUID eventId = UUID.randomUUID();
     private Date eventDate = new Date();
-
+    private FraisDTO fraisDTO;
     public PaiementEvent(PaiementDTO paiementDTO, PaiementStatus paiementStatus) {
         this.paiementDTO = paiementDTO;
         this.paiementStatus = paiementStatus;
@@ -22,6 +25,12 @@ public class PaiementEvent implements  Event {
         this.paiementDTO = paiementDTO;
         this.clientDTO = clientDTO;
         this.paiementStatus = paiementStatus;
+    }
+    public PaiementEvent(PaiementDTO paiementDTO, PaiementStatus paiementStatus,ClientDTO clientDTO, FraisDTO f) {
+        this.paiementDTO = paiementDTO;
+        this.clientDTO = clientDTO;
+        this.paiementStatus = paiementStatus;
+        this.fraisDTO = f;
     }
 
     public PaiementEvent(PaiementDTO paiementDTO, PaiementStatus paiementStatus, UUID eventId, Date eventDate) {

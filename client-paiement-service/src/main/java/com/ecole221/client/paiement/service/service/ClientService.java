@@ -46,7 +46,7 @@ public class ClientService {
     @Transactional
     public Client saveClient(ClientDTO clientDTO) {
         //vvalidation
-        utils.checkData(clientDTO.getTel());
+        utils.checkData(clientDTO);
         clientExists(clientDTO.getTel());
 
         clientDTO.setClientStatus("CREATED");
@@ -63,7 +63,6 @@ public class ClientService {
         clientRepository.findById(event.getCompteDTO().getClientId()).ifPresent(client -> {
             boolean isSaved = CompteStatus.UPDATED.equals(event.getCompteStatus());
             ClientStatus clientStatus = isSaved ? ClientStatus.COMPLETE: ClientStatus.ERREUR_CREATION;
-            log.info(event.getCompteStatus().toString());
             client.setClientStatus(clientStatus);
             client.setCompteStatus(CompteStatus.UPDATED);
         });
@@ -81,8 +80,7 @@ public class ClientService {
 
     @Transactional
     public Client depotInCompte(ClientDTO clientDTO){
-        utils.checkData(clientDTO.getTel());
-        if (clientDTO.getSolde().compareTo(BigDecimal.ZERO) < 0) throw new ClientException("Solde invalide!");
+        utils.checkData(clientDTO);
         Client client = findClientByTel(clientDTO.getTel());
         clientDTO.setId(client.getId());
         ClientEvent clientEvent = new ClientEvent(clientDTO, ClientStatus.CREATED);

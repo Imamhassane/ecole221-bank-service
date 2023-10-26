@@ -26,9 +26,9 @@ public class ServiceController {
         return new ResponseEntity(service.saveService(serviceDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public ServiceDTO changeStatus(@PathVariable UUID id){
-        return service.changeStatus(id);
+    public ServiceDTO changeStatus(@RequestBody ServiceDTO serviceDTO){
+        return service.changeStatus(serviceDTO);
     }
 }

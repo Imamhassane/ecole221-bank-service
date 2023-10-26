@@ -69,7 +69,8 @@ public class PaiementService {
             paiement.setMontant(compteEvent.getPaiementDTO().getMontant());
 
            PaiementEvent paiementEvent = new PaiementEvent
-                  (mapper.paiementToPaiementDTO(paiement), paiementStatus, mapper.clientToClientDTO(paiement.getClient()));
+                  (mapper.paiementToPaiementDTO(paiement), paiementStatus,
+                          mapper.clientToClientDTO(paiement.getClient()) , compteEvent.getFraisDTO());
 
             kafkaTemplate.send(PAIEMENT_TRANSACTION_TOPIC, paiementEvent);
         });
